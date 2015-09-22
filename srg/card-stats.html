@@ -29,6 +29,9 @@
 		text-align: center;
 	}
 
+/*	.vehicle { border-color: blue; }
+	.vehicle strong { color: blue; }*/
+
 
 </style>
 </head>
@@ -66,23 +69,35 @@ var upgradeRange = {
 	body : [-3,-2,-1,0,1,2,3],
 	shield : [-3,-2,-1,0,1,2,3],
 	special : [0,1],
-	points : [-3,-2,-1,0,1,2,3],
+	points : [1,2,3],
+	creditDiv : 1
+}
+
+var malfunctionRange = {
+	engine : [-3,-2,-1,0,1,2,3],
+	maneuver : [-3,-2,-1,0,1,2,3],
+	body : [-3,-2,-1,0,1,2,3],
+	shield : [-3,-2,-1,0,1,2,3],
+	special : [0,1],
+	points : [-3,-2,-1],
 	creditDiv : 1
 }
 
 var vehicleCards = [{}],
 	crewCards = [{}],
-	upgradeCards = [{}];
-// var pointsRange = vehicleRange.points;
+	upgradeCards = [{}],
+	malfunctionCards = [{}];
 
 vehicleCards = getCombinations(vehicleRange);
 crewCards = getCombinations(crewRange);
 upgradeCards = getCombinations(upgradeRange);
+malfunctionCards = getCombinations(malfunctionRange);
 
 var validCards = {
-	vehicles : getValidCards(vehicleCards),
-	crew : getValidCards(crewCards),
-	upgrades : getValidCards(upgradeCards)
+	vehicles : getValidCards(vehicleCards,'vehicle'),
+	crew : getValidCards(crewCards,'crew'),
+	upgrades : getValidCards(upgradeCards,'upgrade'),
+	malfunctions : getValidCards(malfunctionCards,'malfunction')
 }
 
 function getCombinations (ranges) {
@@ -135,7 +150,7 @@ function checkValidCard (card, range) {
 
 
 
-function getValidCards (allCards) {
+function getValidCards (allCards,cardType) {
 	var cards = [{}],
 		cardCounter = 0;
 	for (var i=0; i<allCards.length; i++) {
@@ -144,6 +159,7 @@ function getValidCards (allCards) {
 			// cards[cardCounter] = allCards[i];
 			// console.log(i + " : " + allCards[i].engine + " " + allCards[i].maneuver + " " + allCards[i].body + " " + allCards[i].shield + " " + allCards[i].special + " " + allCards[i].totalPoints + " " + allCards[i].valid);
 			cards[cardCounter] = {
+				cardType : cardType,
 				cardNumber : cardCounter+1,
 				engine : allCards[i].engine,
 				maneuver : allCards[i].maneuver,
@@ -165,11 +181,11 @@ function getValidCards (allCards) {
 
 function writeCard (card,type) {
 	var $container = $('#container');
-	$container.append('<div class="card" id="' + type + card.cardNumber + '" data-num="' + card.cardNumber + '"></div>');
-	var cardClass = '#' + type + card.cardNumber;
+	$container.append('<div class="card ' + card.cardType + '" id="' + card.cardType + card.cardNumber + '" data-num="' + card.cardNumber + '"></div>');
+	var cardClass = '#' + card.cardType + card.cardNumber;
 	var $cardDiv = $(cardClass);
 	// $cardDiv.html('HELLO WORLD');
-	$cardDiv.append('<div class="card-type"><strong>' + type + '</strong></div>');
+	$cardDiv.append('<div class="card-type"><strong>' + card.cardType + '</strong></div>');
 	$cardDiv.append('<ul>');
 	$cardDiv.append('<li>Card #' + card.cardNumber + '</li>');
 	$cardDiv.append('<li>Engine = ' + card.engine + '</li>');
@@ -203,13 +219,15 @@ function writeContainer (cardName,cards) {
 // writeContainer("VEHICLES",validCards.vehicles);
 // writeContainer("CREW",validCards.crew);
 // writeContainer("UPGRADE",validCards.upgrades);
+// writeContainer("MALFUNCTION",validCards.malfunctions);
 
 
 // writeCard(validCards.vehicles[1]);
 
 writeAllCards(validCards.vehicles,"VEHICLE");
 writeAllCards(validCards.crew,"CREW");
-// writeAllCards(validCards.upgrades,"UPGRADE");
+writeAllCards(validCards.upgrades,"UPGRADE");
+writeAllCards(validCards.malfunction,"MALFUNCTION");
 
 });
 </script>
